@@ -2,6 +2,12 @@ markdown+mathjax
 ================
 Live markdown editor based on MathJax and Marked
 
+
+## Demo:
+
+http://kerzol.github.io/markdown-mathjax/editor.html
+
+
 ## Dependencies
 
 - https://github.com/chjj/marked
