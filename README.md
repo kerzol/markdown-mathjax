@@ -2,6 +2,18 @@ markdown+mathjax
 ================
 Live markdown editor based on MathJax and Marked
 
+
+## How it works?
+
+text → Escape tags → MathJax → Markdown → preview
+
+
+## Demo
+
+http://kerzol.github.io/markdown-mathjax/editor.html
+
+
+
 ## Dependencies
 
 - https://github.com/chjj/marked
@@ -22,3 +34,4 @@ Just type in the terminal:
 
 We use MathJax from http://cdn.mathjax.org/. 
 If you don't like that you need to read and modify _editor.html_
+
