@@ -3,9 +3,15 @@ markdown+mathjax
 Live markdown editor based on MathJax and Marked
 
 
-## Demo:
+## How it works?
+
+text → Escape tags → MathJax → Markdown → preview
+
+
+## Demo
 
 http://kerzol.github.io/markdown-mathjax/editor.html
+
 
 
 ## Dependencies
@@ -28,3 +34,4 @@ Just type in the terminal:
 
 We use MathJax from http://cdn.mathjax.org/. 
 If you don't like that you need to read and modify _editor.html_
+
