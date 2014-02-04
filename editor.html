@@ -48,7 +48,8 @@ marked.setOptions({
   tables: true,
   breaks: false,
   pedantic: false,
-  sanitize: false, // IMPORTANT, because we do MathJax before markdown.
+  sanitize: false, // IMPORTANT, because we do MathJax before markdown,
+                   //            however we do escaping in 'CreatePreview'.
   smartLists: true,
   smartypants: false
 });
@@ -112,6 +113,7 @@ var Preview = {
     if (this.mjRunning) return;
     var text = document.getElementById("marked-mathjax-input").value;
     if (text === this.oldtext) return;
+    text = this.Escape(text);                       //Escape tags before doing stuff
     this.buffer.innerHTML = this.oldtext = text;
     this.mjRunning = true;
     MathJax.Hub.Queue(
@@ -122,13 +124,25 @@ var Preview = {
 
   //
   //  Indicate that MathJax is no longer running,
+  //  do markdown over MathJax's result, 
   //  and swap the buffers to show the results.
   //
   PreviewDone: function () {
     this.mjRunning = false;
-    this.buffer.innerHTML = marked (this.buffer.innerHTML);
+    text = this.buffer.innerHTML;
+    this.buffer.innerHTML = marked (text);
     this.SwapBuffers();
+  },
+
+  Escape: function (html, encode) {
+    return html
+      .replace(!encode ? /&(?!#?\w+;)/g : /&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+     .replace(/'/g, '&#39;');
   }
+
 
 };
 
