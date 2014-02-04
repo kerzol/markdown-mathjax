@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Live markdown editor based on MathJax and Marked</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+<!-- based on MathJax/test/sample-dynamic-2.html -->
+
+<style>
+body {
+    width: 40em;
+}
+.hint {
+    text-align: right;
+    color: #555555;
+    font-size: small;
+}
+.hint a {
+    color: #555555;
+}
+textarea {
+    margin-top: 1ex;
+    width: 100%;
+    height: 20em;
+}
+.preview {
+    border:1px dotted; 
+    padding: 3px; 
+    width: 99%;
+    margin-top:1ex;
+}
+</style>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    showProcessingMessages: false,
+    tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] }
+  });
+</script>
+<script type="text/javascript" src="lib/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/javascript" src="lib/marked/lib/marked.js"></script>
+
+<script>
+marked.setOptions({
+  renderer: new marked.Renderer(),
+  gfm: true,
+  tables: true,
+  breaks: false,
+  pedantic: false,
+  sanitize: false, // IMPORTANT, because we do MathJax before markdown.
+  smartLists: true,
+  smartypants: false
+});
+</script>
+
+<script>
+var Preview = {
+  delay: 50,        // delay after keystroke before updating
+
+  preview: null,     // filled in by Init below
+  buffer: null,      // filled in by Init below
+
+  timeout: null,     // store setTimout id
+  mjRunning: false,  // true when MathJax is processing
+  oldText: null,     // used to check if an update is needed
+
+  //
+  //  Get the preview and buffer DIV's
+  //
+  Init: function () {
+    this.preview = document.getElementById("marked-mathjax-preview");
+    this.buffer = document.getElementById("marked-mathjax-preview-buffer");
+  },
+
+  //
+  //  Switch the buffer and preview, and display the right one.
+  //  (We use visibility:hidden rather than display:none since
+  //  the results of running MathJax are more accurate that way.)
+  //
+  SwapBuffers: function () {
+    var buffer = this.preview, preview = this.buffer;
+    this.buffer = buffer; this.preview = preview;
+    buffer.style.display = "none";
+    buffer.style.position = "absolute";
+    preview.style.position = ""; 
+    preview.style.display = "";
+  },
+
+  //
+  //  This gets called when a key is pressed in the textarea.
+  //  We check if there is already a pending update and clear it if so.
+  //  Then set up an update to occur after a small delay (so if more keys
+  //    are pressed, the update won't occur until after there has been 
+  //    a pause in the typing).
+  //  The callback function is set up below, after the Preview object is set up.
+  //
+  Update: function () {
+    if (this.timeout) {clearTimeout(this.timeout)}
+    this.timeout = setTimeout(this.callback,this.delay);
+  },
+
+  //
+  //  Creates the preview and runs MathJax on it.
+  //  If MathJax is already trying to render the code, return
+  //  If the text hasn't changed, return
+  //  Otherwise, indicate that MathJax is running, and start the
+  //    typesetting.  After it is done, call PreviewDone.
+  //  
+  CreatePreview: function () {
+    Preview.timeout = null;
+    if (this.mjRunning) return;
+    var text = document.getElementById("marked-mathjax-input").value;
+    if (text === this.oldtext) return;
+    this.buffer.innerHTML = this.oldtext = text;
+    this.mjRunning = true;
+    MathJax.Hub.Queue(
+      ["Typeset",MathJax.Hub,this.buffer],
+      ["PreviewDone",this]
+    );
+  },
+
+  //
+  //  Indicate that MathJax is no longer running,
+  //  and swap the buffers to show the results.
+  //
+  PreviewDone: function () {
+    this.mjRunning = false;
+    this.buffer.innerHTML = marked (this.buffer.innerHTML);
+    this.SwapBuffers();
+  }
+
+};
+
+//
+//  Cache a callback to the CreatePreview action
+//
+Preview.callback = MathJax.Callback(["CreatePreview",Preview]);
+Preview.callback.autoReset = true;  // make sure it can run more than once</script>
+</head>
+
+<body>
+
+<h4>Type something:</h4>
+<textarea id="marked-mathjax-input"
+          onkeyup="Preview.Update()"
+          name="comment"
+          "autofocus">##### test
+
+$ \Gamma, G$
+
+$A_G A_\Gamma$</textarea>
+
+  <div class="hint">Use 
+    <a href="http://en.wikibooks.org/wiki/LaTeX/Mathematics">$\LaTeX$</a>
+    to type formulæ 
+    and <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">markdown</a> to format text.
+  </div>
+
+  <div class="preview" id="marked-mathjax-preview"></div>
+  <div class="preview" id="marked-mathjax-preview-buffer" 
+       style="display:none;
+              position:absolute; 
+              top:0; left: 0"></div>
+
+<script>
+Preview.Init();
+Preview.Update();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,6 @@
+[submodule "lib/MathJax"]
+	path = lib/MathJax
+	url = https://github.com/mathjax/MathJax
+[submodule "lib/marked"]
+	path = lib/marked
+	url = https://github.com/chjj/marked
