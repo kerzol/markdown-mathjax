@@ -48,8 +48,7 @@ marked.setOptions({
   tables: true,
   breaks: false,
   pedantic: false,
-  sanitize: false, // IMPORTANT, because we do MathJax before markdown,
-                   //            however we do escaping in 'CreatePreview'.
+  sanitize: true,
   smartLists: true,
   smartypants: false
 });
@@ -113,7 +112,7 @@ var Preview = {
     if (this.mjRunning) return;
     var text = document.getElementById("marked-mathjax-input").value;
     if (text === this.oldtext) return;
-    text = this.Escape(text);                       //Escape tags before doing stuff
+    text = this.Escape(text);         //escape before mathjax
     this.buffer.innerHTML = this.oldtext = text;
     this.mjRunning = true;
     MathJax.Hub.Queue(
@@ -129,8 +128,31 @@ var Preview = {
   //
   PreviewDone: function () {
     this.mjRunning = false;
-    text = this.buffer.innerHTML;
-    this.buffer.innerHTML = marked (text);
+    if ( this.buffer.hasChildNodes() ) {
+      var children = this.buffer.childNodes;
+
+      for (var i = 0; i < children.length; i++) {
+        var child = children[i];
+        if (child.nodeType === 3 ) { 
+          // apply markdown only to text nodes.
+          // 3 means TEXT_NODE
+          var txt = child.textContent;
+          var temp = document.createElement('span');
+          console.log('TEXTCONTENT');
+          console.log(txt);
+          temp.innerHTML = marked (txt);
+          //we hope that marked will return only a suequnce of tags...
+          if ( temp.hasChildNodes() ) {
+            var tempChildren = temp.childNodes;
+            for (var j = 0; j < tempChildren.length; j++) {
+              child.parentNode.insertBefore(tempChildren[j], child);
+            }
+          }
+          child.parentNode.removeChild(child);
+
+        }
+      }
+    }
     this.SwapBuffers();
   },
 
@@ -140,7 +162,7 @@ var Preview = {
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
-     .replace(/'/g, '&#39;');
+      .replace(/'/g, '&#39;');
   }
 
 
@@ -150,7 +172,8 @@ var Preview = {
 //  Cache a callback to the CreatePreview action
 //
 Preview.callback = MathJax.Callback(["CreatePreview",Preview]);
-Preview.callback.autoReset = true;  // make sure it can run more than once</script>
+Preview.callback.autoReset = true;  // make sure it can run more than once
+</script>
 </head>
 
 <body>
@@ -163,16 +186,20 @@ Preview.callback.autoReset = true;  // make sure it can run more than once</scri
 <textarea id="marked-mathjax-input"
           onkeyup="Preview.Update()"
           name="comment"
-          "autofocus">##### test
+          "autofocus">
+##### test
 
 $ \Gamma, G$
+$A_G A_\Gamma$
 
-$A_G A_\Gamma$</textarea>
+$$ \_ $$
+<h1> HTML WILL BE ESCAPED</h1>
+</textarea>
 
   <div class="hint">Use 
     <a href="http://en.wikibooks.org/wiki/LaTeX/Mathematics">$\LaTeX$</a>
     to type formulæ 
-    and <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">markdown</a> to format text.
+    and <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">markdown</a> to format text
   </div>
 
   <div class="preview" id="marked-mathjax-preview"></div>
