@@ -27,7 +27,7 @@ You should initialize and fetch
 Just type in the terminal:
 
 ```bash
-    cd lib
+    cd markdown-mathjax/
     git submodule init
     git submodule update
 ```
