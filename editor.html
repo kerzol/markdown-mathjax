@@ -35,7 +35,8 @@ textarea {
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
     showProcessingMessages: false,
-    tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] }
+    tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] },
+    TeX: { equationNumbers: {autoNumber: "AMS"} }
   });
 </script>
 <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -118,7 +119,8 @@ var Preview = {
     this.mjRunning = true;
     MathJax.Hub.Queue(
       ["Typeset",MathJax.Hub,this.buffer],
-      ["PreviewDone",this]
+      ["PreviewDone",this],
+      ["resetEquationNumbers", MathJax.InputJax.TeX]
     );
   },
 
