@@ -132,6 +132,9 @@ var Preview = {
   PreviewDone: function () {
     this.mjRunning = false;
     text = this.buffer.innerHTML;
+    // replace occurrences of &gt; at the beginning of a new line
+    // with > again, so Markdown blockquotes are handled correctly
+    text = ('\n' + text).replace(/[\n]&gt;/g, '>');
     this.buffer.innerHTML = marked (text);
     this.SwapBuffers();
   },
