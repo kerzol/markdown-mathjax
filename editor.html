@@ -58,7 +58,7 @@ marked.setOptions({
 
 <script>
 var Preview = {
-  delay: 5,        // delay after keystroke before updating
+  delay: 50,        // delay after keystroke before updating
 
   preview: null,     // filled in by Init below
   buffer: null,      // filled in by Init below
@@ -73,6 +73,7 @@ var Preview = {
   Init: function () {
     this.preview = document.getElementById("marked-mathjax-preview");
     this.buffer = document.getElementById("marked-mathjax-preview-buffer");
+    this.textarea = document.getElementById("marked-mathjax-input");
   },
 
   //
@@ -112,7 +113,7 @@ var Preview = {
   CreatePreview: function () {
     Preview.timeout = null;
     if (this.mjRunning) return;
-    var text = document.getElementById("marked-mathjax-input").value;
+    var text = this.textarea.value;
     if (text === this.oldtext) return;
     text = this.Escape(text);                       //Escape tags before doing stuff
     this.buffer.innerHTML = this.oldtext = text;
@@ -146,8 +147,12 @@ var Preview = {
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
      .replace(/'/g, '&#39;');
-  }
+  },
 
+  FastUpdate: function () {
+    this.preview.innerHTML = '<p>' + this.textarea.value + '</p>';
+    this.Update();
+  }
 
 };
 
@@ -166,7 +171,8 @@ Preview.callback.autoReset = true;  // make sure it can run more than once</scri
 
 <h4>Type something:</h4>
 <textarea id="marked-mathjax-input"
-          onkeyup="Preview.Update()"
+          onkeypress="Preview.FastUpdate()"
+          onkeyup="Preview.FastUpdate()"
           name="comment"
           "autofocus">##### test
 
