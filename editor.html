@@ -149,11 +149,13 @@ var Preview = {
      .replace(/'/g, '&#39;');
   },
 
-  FastUpdate: function () {
-    this.preview.innerHTML = '<p>' + this.textarea.value + '</p>';
+  UpdateKeyPress: function (event) {
+    if (event.keyCode < 16 || event.keyCode > 47) {
+      this.preview.innerHTML = '<p>' + this.textarea.value + '</p>';
+    }
     this.Update();
   }
-
+  
 };
 
 //
@@ -170,9 +172,9 @@ Preview.callback.autoReset = true;  // make sure it can run more than once</scri
 </div>
 
 <h4>Type something:</h4>
-<textarea id="marked-mathjax-input"
-          onkeypress="Preview.FastUpdate()"
-          onkeyup="Preview.FastUpdate()"
+  <textarea id="marked-mathjax-input"
+          onkeyup="Preview.UpdateKeyPress(event)"
+          onkeypress="Preview.UpdateKeyPress(event)"
           name="comment"
           "autofocus">##### test
 
