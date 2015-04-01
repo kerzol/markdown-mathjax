@@ -82,8 +82,10 @@ var Preview = {
   //  the results of running MathJax are more accurate that way.)
   //
   SwapBuffers: function () {
-    var buffer = this.preview, preview = this.buffer;
-    this.buffer = buffer; this.preview = preview;
+    var buffer = this.preview;
+    var preview = this.buffer;
+    this.buffer = buffer;
+    this.preview = preview;
     buffer.style.display = "none";
     buffer.style.position = "absolute";
     preview.style.position = ""; 
@@ -149,9 +151,15 @@ var Preview = {
      .replace(/'/g, '&#39;');
   },
 
+  // The idea here is to perform fast updates. See http://stackoverflow.com/questions/11228558/let-pagedown-and-mathjax-work-together/21563171?noredirect=1#comment46869312_21563171
+  // But our implementation is a bit buggy: flickering, bad rendering when someone types very fast.
+  //
+  // If you want to enable such buggy fast updates, you should 
+  // add something like  onkeypress="Preview.UpdateKeyPress(event)" to textarea's attributes.
   UpdateKeyPress: function (event) {
     if (event.keyCode < 16 || event.keyCode > 47) {
-      this.preview.innerHTML = '<p>' + this.textarea.value + '</p>';
+      this.preview.innerHTML = '<p>' + marked(this.textarea.value) + '</p>';
+      this.buffer.innerHTML = '<p>' + marked(this.textarea.value) + '</p>';
     }
     this.Update();
   }
@@ -172,9 +180,9 @@ Preview.callback.autoReset = true;  // make sure it can run more than once</scri
 </div>
 
 <h4>Type something:</h4>
+
   <textarea id="marked-mathjax-input"
-          onkeyup="Preview.UpdateKeyPress(event)"
-          onkeypress="Preview.UpdateKeyPress(event)"
+          onkeyup="Preview.Update()"
           name="comment"
           "autofocus">##### test
 
