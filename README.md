@@ -10,14 +10,14 @@ text → Escape tags → MathJax → Markdown → preview
 
 ## Demo
 
-http://kerzol.github.io/markdown-mathjax/editor.html
+https://kerzol.github.io/markdown-mathjax/editor.html
 
 
 
 ## Dependencies
 
 - https://github.com/chjj/marked
-- http://cdn.mathjax.org/mathjax/latest/MathJax.js
+- https://cdn.mathjax.org/mathjax/latest/MathJax.js
 
 
 ## Install
