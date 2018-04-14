@@ -5,13 +5,11 @@ Live markdown editor based on MathJax and Marked
 
 ## How it works?
 
-text → Escape tags → MathJax → Markdown → preview
-
+text → Escape tags → MathJax → Unescape some sutff → Markdown → preview
 
 ## Demo
 
 https://kerzol.github.io/markdown-mathjax/editor.html
-
 
 
 ## Dependencies
@@ -19,11 +17,10 @@ https://kerzol.github.io/markdown-mathjax/editor.html
 - https://github.com/chjj/marked
 - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js
 
-
 ## Install
 
 You should initialize and fetch
-[marked](https://github.com/chjj/marked) into _lib/_.
+[marked](https://github.com/chjj/marked) into `lib/`
 Just type in the terminal:
 
 ```bash

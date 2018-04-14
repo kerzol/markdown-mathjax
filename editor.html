@@ -30,6 +30,15 @@ textarea {
     width: 99%;
     margin-top:1ex;
 }
+blockquote {
+    color: #6a737d;
+    padding-left: 1em;
+    padding-top: 0.5ex;
+    padding-bottom: 0.5ex;
+    background-color: #eee;
+    border: 1px solid #73A0C5;
+    border-left: 0.5ex solid #73A0C5;
+}
 </style>
 
 <script type="text/x-mathjax-config">
@@ -135,9 +144,7 @@ var Preview = {
   PreviewDone: function () {
     this.mjRunning = false;
     text = this.buffer.innerHTML;
-    // replace occurrences of &gt; at the beginning of a new line
-    // with > again, so Markdown blockquotes are handled correctly
-    text = text.replace(/^&gt;/mg, '>');
+    text = this.PartialDescape(text);
     this.buffer.innerHTML = marked (text);
     this.SwapBuffers();
   },
@@ -151,7 +158,44 @@ var Preview = {
      .replace(/'/g, '&#39;');
   },
 
-  // The idea here is to perform fast updates. See http://stackoverflow.com/questions/11228558/let-pagedown-and-mathjax-work-together/21563171?noredirect=1#comment46869312_21563171
+  PartialDescape: function (html) {
+    var lines = html.split('\n');
+    var out = '';
+
+    // is true when we are 
+    // ```
+    //  inside a code block
+    // ```
+    var inside_code = false;
+    
+    for (var i = 0; i < lines.length; i++) {
+      // a hack to properly rendre the blockquotes
+      if (lines[i].startsWith('&gt;')) {
+        lines[i] = lines[i].replace(/&gt;/g, '>');
+      }
+
+      // rendrer properly stuff like this
+      // ```c
+      //  if (a > b)
+      // ```
+      if (inside_code) {
+        // inside the code we descape stuff
+        lines[i] = lines[i]
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>')
+          .replace(/&quot;/g, '"')
+          .replace(/&#39;/g, '\'');
+      }
+      if (lines[i].startsWith('```')) {
+        inside_code = ! inside_code;
+      }
+      out += lines[i] + '\n';
+    }
+    return out;    
+  },
+
+  // The idea here is to perform fast updates.
+  // See http://stackoverflow.com/questions/11228558/let-pagedown-and-mathjax-work-together/21563171?noredirect=1#comment46869312_21563171
   // But our implementation is a bit buggy: flickering, bad rendering when someone types very fast.
   //
   // If you want to enable such buggy fast updates, you should 
@@ -185,10 +229,28 @@ Preview.callback.autoReset = true;  // make sure it can run more than once</scri
           onkeyup="Preview.Update()"
           name="comment"
           "autofocus">##### test
-
 $ \Gamma, G$
 
-$A_G A_\Gamma$</textarea>
+$A_G A_\Gamma$
+
+> test
+>> $\Gamma$ [Example](http://exmaple.com)
+
+<marquee> NOT! </marquee>
+
+$$ 
+\begin{array}{|c|c|c|c|}
+\hline
+1& 1 > -1 & 1 & -1 \\ \hline
+& 3 & 55 & 44\\ \hline
+& 4 & 93 & 33\\ \hline
+& 5 & 6 &  22\\ \hline
+\end{array}$$
+
+```
+if (1 <b> a </b> 2)
+```
+  </textarea>
 
   <div class="hint">Use 
     <a href="http://en.wikibooks.org/wiki/LaTeX/Mathematics">$\LaTeX$</a>
