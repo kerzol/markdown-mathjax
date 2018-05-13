@@ -32,12 +32,36 @@ textarea {
 }
 blockquote {
     color: #6a737d;
-    padding-left: 1em;
-    padding-top: 0.5ex;
-    padding-bottom: 0.5ex;
-    background-color: #eee;
-    border: 1px solid #73A0C5;
-    border-left: 0.5ex solid #73A0C5;
+    padding-left: 3px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    margin: 0;
+    border-left: 3px solid #73A0C5;
+}
+blockquote > blockquote {
+    border-color: #CF908D;
+}
+blockquote > blockquote > blockquote {
+    border-color: #57C59C;
+}
+blockquote > blockquote > blockquote > blockquote {
+    border-color: #C957F8;
+}
+blockquote > blockquote > blockquote > blockquote > blockquote {
+    border-color: #F8B829;
+}
+blockquote > blockquote > blockquote > blockquote > blockquote > blockquote {
+    border-color: #8DA1C5;
+}
+blockquote > blockquote > blockquote > blockquote > blockquote > blockquote > blockquote {
+    border-color: #888;
+}
+
+blockquote p:first-of-type {
+    margin-top: 0;
+}
+blockquote p:last-of-type {
+    margin-bottom: 0;
 }
 </style>
 
@@ -228,7 +252,20 @@ Preview.callback.autoReset = true;  // make sure it can run more than once</scri
   <textarea id="marked-mathjax-input"
           onkeyup="Preview.Update()"
           name="comment"
-          "autofocus">##### test
+            "autofocus">
+
+```
+#include<cmath>
+#include <stdio.h>
+int main()
+{
+   // printf() displays the string inside quotation
+   printf("Hello, World!");
+   return 0;
+}      
+```
+      
+    ##### test
 $ \Gamma, G$
 
 $A_G A_\Gamma$
