@@ -5,7 +5,7 @@ Live markdown editor based on MathJax and Marked
 
 ## How it works?
 
-text → Escape tags → MathJax → Unescape some sutff → Markdown → preview
+text → Escape tags → MathJax → Unescape some stuff → Markdown → preview
 
 ## Demo
 
