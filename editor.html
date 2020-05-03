@@ -96,7 +96,7 @@ var Preview = {
   preview: null,     // filled in by Init below
   buffer: null,      // filled in by Init below
 
-  timeout: null,     // store setTimout id
+  timeout: null,     // store setTimeout id
   mjRunning: false,  // true when MathJax is processing
   oldText: null,     // used to check if an update is needed
 
@@ -193,17 +193,17 @@ var Preview = {
     var inside_code = false;
     
     for (var i = 0; i < lines.length; i++) {
-      // a hack to properly rendre the blockquotes
+      // a hack to properly render the blockquotes
       if (lines[i].startsWith('&gt;')) {
         lines[i] = lines[i].replace(/&gt;/g, '>');
       }
 
-      // rendrer properly stuff like this
+      // render properly stuff like this
       // ```c
       //  if (a > b)
       // ```
       if (inside_code) {
-        // inside the code we descape stuff
+        // inside the code we unescape stuff
         lines[i] = lines[i]
           .replace(/&lt;/g, '<')
           .replace(/&gt;/g, '>')
